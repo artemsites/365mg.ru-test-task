@@ -4,7 +4,7 @@
     <div class="filter-item" v-for="filter in filters" :key="filter.id">
       <div class="filter-title">{{ filter.title }}</div>
 
-      <div class="filter-item__list" :class="{'_row': filter.title === 'Цвет'||filter.title === 'Размер'}">
+      <div class="filter-item__list" :class="{ '_row': filter.title === 'Цвет' || filter.title === 'Размер' }">
 
         <template v-for="val in filter.value" :key="val.id">
           <button v-if="filter.title === 'Цвет'" class="filter-item__item _box"
@@ -54,10 +54,16 @@ export default defineComponent({
       .then(data => {
         let curFilter = data.sort((a, b) => {
           return Object.values(a)[0].sort - Object.values(b)[0].sort;
-        })
+        });
 
         curFilter.forEach((filter) => {
-          this.filters[Object.values(filter)[0].id] = Object.values(filter)[0];
+          const filterData = Object.values(filter)[0];
+          
+          filterData.value.sort((a, b) => {
+            if (a.sort) return a.sort - b.sort
+          });
+
+          this.filters[filterData.id] = filterData;
         });
       });
   }
@@ -76,6 +82,7 @@ export default defineComponent({
     display: inline-flex;
     flex-direction: column;
     margin-top: 0.8rem;
+
     &._row {
       flex-direction: row;
     }
