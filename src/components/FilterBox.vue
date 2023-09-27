@@ -52,26 +52,13 @@ export default defineComponent({
     })
       .then(res => res.json())
       .then(data => {
-        console.log('data')
-        console.log(data)
-        // this.filters = data.sort((a, b)=>{
-        //   // console.log('a')
-        //   // console.log(Object.entries(a))
-        //   return Object.values(a)[0].sort - Object.values(b)[0].sort;
-        // })
         let curFilter = data.sort((a, b) => {
           return Object.values(a)[0].sort - Object.values(b)[0].sort;
         })
 
-        console.log('curFilter')
-        console.log(curFilter)
-
         curFilter.forEach((filter) => {
           this.filters[Object.values(filter)[0].id] = Object.values(filter)[0];
         });
-
-        console.log('this.filters')
-        console.log(this.filters)
       });
   }
 })

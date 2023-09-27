@@ -1,0 +1,10 @@
+.aside {
+  padding-right: 2rem;
+  border-right: 0.01rem solid var(--gray);
+  flex-shrink: 0;
+
+  &:after {
+    content: "";
+    padding-right: 1rem;
+  }
+}
