@@ -6,6 +6,10 @@
   font-weight: normal;
 }
 
+:root {
+  --dark: black;
+}
+
 body {
   min-height: 100vh;
   line-height: 1.6;
@@ -27,3 +31,4 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
