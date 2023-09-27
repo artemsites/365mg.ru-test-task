@@ -7,65 +7,51 @@
       <div class="filter-item__list" :class="{ '_row': filter.title === 'Цвет' || filter.title === 'Размер' }">
 
         <template v-for="val in filter.value" :key="val.id">
-          <button v-if="filter.title === 'Цвет'" class="filter-item__item _box"
-            :style="`--color: ${val.value};`"></button>
-          <button v-else-if="filter.title === 'Размер'" class="filter-item__item _box">{{ val.title }}</button>
-          <button v-else class="filter-item__item">{{ val.title }}</button>
+          <button v-if="filter.title === 'Цвет'" class="filter-item__item _box" :style="`--color: ${val.value};`" @click="setFilter(val, filter)"></button>  
+
+          <button v-else-if="filter.title === 'Размер'" class="filter-item__item _box" @click="setFilter(val, filter)">{{ val.title }}</button>  
+
+          <button v-else class="filter-item__item" @click="setFilter(val, filter)">{{ val.title }}</button>  
         </template>
 
       </div>
 
     </div>
 
-    <!-- <FilterBrand />
-    <FilterColor />
-    <FilterSize /> -->
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-// import FilterBrand from '../components/FilterBrand.vue';
-// import FilterColor from '../components/FilterColor.vue';
-// import FilterSize from '../components/FilterSize.vue';
+import { mapState, mapWritableState } from 'pinia';
+import { useStore } from '../stores/store';
 
 export default defineComponent({
   name: "FilterBox",
 
   components: {
-    // FilterBrand,
-    // FilterColor,
-    // FilterSize,
   },
 
   data() {
     return {
-      filters: {},
     }
   },
+  computed: {
+    ...mapState(useStore, ['filters']),
+    ...mapWritableState(useStore, ['filterState']),
+  },
   created() {
-    fetch('/api/filter.json', {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
-        let curFilter = data.sort((a, b) => {
-          return Object.values(a)[0].sort - Object.values(b)[0].sort;
-        });
+  },
 
-        curFilter.forEach((filter) => {
-          const filterData = Object.values(filter)[0];
-          
-          filterData.value.sort((a, b) => {
-            if (a.sort) return a.sort - b.sort
-          });
-
-          this.filters[filterData.id] = filterData;
-        });
-      });
+  methods: {
+    setFilter(val, filter) {
+      if (this.filterState[val.id]) {
+        delete this.filterState[val.id]
+      }
+      else {
+        this.filterState[val.id] = val;
+      }
+    }
   }
 })
 </script>

@@ -7,7 +7,7 @@
     </aside>
 
     <main class="catalog _pl3">
-      <template v-for="product in products">
+      <template v-for="product in filteredProducts" :key="product.id">
         <CardItem :product="product" />
       </template>
     </main>
@@ -22,7 +22,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
 
-  > * {
+  >* {
     margin-bottom: 1.5rem;
   }
 
@@ -33,30 +33,62 @@
 </style>
 
 <script>
-// import Aside from '../components/Aside.vue';
+import { mapState } from 'pinia';
+import { useStore } from '../stores/store';
+
 import FilterBox from '../components/FilterBox.vue';
 import CardItem from '../components/CardItem.vue';
-// import FilterBrand from '../components/FilterBrand.vue';
-// import FilterColor from '../components/FilterColor.vue';
-// import FilterSize from '../components/FilterSize.vue';
 
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: "BasketView",
   components: {
-    // Aside,
     FilterBox,
     CardItem,
-    // FilterBrand,
-    // FilterColor,
-    // FilterSize,
   },
+
   data() {
     return {
       products: [],
+      filteredProducts: [],
     }
   },
+
+  computed: {
+    ...mapState(useStore, ['filterState']),
+  },
+
+  watch: {
+    filterState: {
+      handler(newFilterState) {
+        this.filteredProducts = []
+
+        let filtersKeys = Object.keys(newFilterState);
+
+        if (filtersKeys.length === 0) this.filteredProducts = this.products;
+        else {
+          this.products.forEach(product => {
+
+            filtersKeys.forEach(filterId => {
+              if (product.brand === filterId) this.filteredProducts.push(product);
+
+              if (product.offers) {
+                product.offers.forEach(offer => {
+                  if (offer.color === filterId) this.filteredProducts.push(product);
+                  if (offer.sizes === newFilterState[filterId].title) this.filteredProducts.push(product);
+                })
+              }
+            })
+
+          })
+        }
+      },
+      deep: true,
+      // immediate: true,
+    }
+  },
+
   created() {
     fetch('/api/products.json', {
       method: "GET",
@@ -68,15 +100,10 @@ export default defineComponent({
       .then(data => {
         console.log('data')
         console.log(data)
+        if (Object.keys(this.filteredProducts).length === 0) this.filteredProducts = data
         this.products = data
-        // let curFilter = data.sort((a, b) => {
-        //   return Object.values(a)[0].sort - Object.values(b)[0].sort;
-        // })
-
-        // curFilter.forEach((filter) => {
-        //   this.filters[Object.values(filter)[0].id] = Object.values(filter)[0];
-        // });
       });
-  }
+  },
+
 })
 </script>
