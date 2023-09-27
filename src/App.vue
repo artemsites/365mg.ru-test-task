@@ -14,7 +14,9 @@ import BasketBtn from './components/BasketBtn.vue'
     </nav> -->
   </header>
 
-  <RouterView />
+  <div class="container content">
+    <RouterView />
+  </div>
 </template>
 
 <style scoped>
