@@ -1,14 +1,10 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useStore = defineStore('store', () => {
-  // const doubleCount = computed(() => count.value * 2)
-  // function increment() {
-  //   count.value++
-  // }
-
+export const useFilters = defineStore('filters', () => {
   const filters = ref({});
   const filterState = ref({});
+  const filterColors = ref({});
 
   fetch('/api/filter.json', {
     method: 'GET',
@@ -30,14 +26,18 @@ export const useStore = defineStore('store', () => {
         })
 
         filters.value[filterData.id] = filterData
+
+        if (filter.color) {
+          filter.color.value.forEach(color => {
+            filterColors.value[color.id] = color
+          })
+        }
       })
     });
 
   return {
     filters,
     filterState,
-    // count,
-    // doubleCount,
-    // increment
+    filterColors,
   }
 })

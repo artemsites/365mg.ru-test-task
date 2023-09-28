@@ -9,7 +9,7 @@
     <main class="box__catalog catalog _pl3">
       <div class="catalog__box">
         <TransitionGroupCards>
-          <CardItem :product="product" v-for="product in filteredProducts" :key="product.id" />
+          <ProductCard :product="product" v-for="product in filteredProducts" :key="product.id" />
         </TransitionGroupCards>
       </div>
     </main>
@@ -27,7 +27,8 @@
   &__box {  
     width: 100%;
 
-    display: block;
+    display: flex;
+    flex-wrap: wrap;
 
     position: relative;
 
@@ -48,10 +49,10 @@
 
 <script>
 import { mapState } from 'pinia';
-import { useStore } from '../stores/store';
+import { useFilters } from '../stores/filters';
 
 import FilterBox from '../components/FilterBox.vue';
-import CardItem from '../components/CardItem.vue';
+import ProductCard from '../components/ProductCard.vue';
 import TransitionGroupCards from '../components/TransitionGroupCards.vue';
 
 import { defineComponent } from 'vue';
@@ -60,7 +61,7 @@ export default defineComponent({
   name: "BasketView",
   components: {
     FilterBox,
-    CardItem,
+    ProductCard,
     TransitionGroupCards,
   },
 
@@ -88,7 +89,7 @@ export default defineComponent({
   },
 
   computed: {
-    ...mapState(useStore, ['filterState']),
+    ...mapState(useFilters, ['filterState']),
   },
 
   watch: {
