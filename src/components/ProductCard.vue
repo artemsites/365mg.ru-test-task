@@ -57,7 +57,9 @@ export default defineComponent({
     colorsForView(offers) {
       const colorsForView = {}
       offers.forEach(offer=>{
-        if (offer.available!==0 && offer.color) colorsForView[offer.color] = {code: this.filterColors[offer.color].value, id: offer.id}
+        if (this.filterColors[offer.color] && offer.available > 0) {
+          colorsForView[offer.color] = {code: this.filterColors[offer.color].value, id: offer.id}
+        }
       })
       return colorsForView
     },

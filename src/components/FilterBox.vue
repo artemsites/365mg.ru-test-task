@@ -12,23 +12,23 @@
           <ButtonColor
             v-if="filterList.title === 'Цвет'"
             class="filter-item__item"
-            @click="setFilter(filterItem, $event)"
+            @click="setFilter(filterItem)"
             :color="filterItem.value"
-            :active="(this.filterState[filterItem.id])?this.filterState[filterItem.id].id===filterItem.id:false" />
+            :active="(this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" />
 
           <ButtonSize
             v-else-if="filterList.title === 'Размер'"
             class="filter-item__item"
-            @click="setFilter(filterItem, $event)"
-            :active="(this.filterState[filterItem.id])?this.filterState[filterItem.id].id===filterItem.id:false" >
+            @click="setFilter(filterItem)"
+            :active="(this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" >
             {{ filterItem.title }}
           </ButtonSize>
 
           <button
             v-else
             class="filter-item__item"
-            @click="setFilter(filterItem, $event)"
-            :class="{'_active': (this.filterState[filterItem.id])?this.filterState[filterItem.id].id===filterItem.id:false}">
+            @click="setFilter(filterItem)"
+            :class="{'_active': (this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false}">
             {{ filterItem.title }}
           </button>
         </template>
@@ -60,23 +60,23 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(useFilters, ['filters']),
-    ...mapWritableState(useFilters, ['filterState']),
+    ...mapState(useFilters, ['filters', 'setFilter']),
+    ...mapWritableState(useFilters, ['filtersState']),
   },
   created() {
   },
 
   methods: {
-    setFilter(val, event) {
-      if (this.filterState[val.id]) {
-        delete this.filterState[val.id]
-      }
-      else {
-        this.filterState[val.id] = val;
-      }
-      // console.log('this.filterState')
-      // console.log(this.filterState)
-    }
+    // setFilter(val, event) {
+    //   if (this.filtersState[val.id]) {
+    //     deleteFilterInStorage(val.id);
+    //     delete this.filtersState[val.id];
+    //   }
+    //   else {
+    //     setFilterToStorage(val.id);
+    //     this.filtersState[val.id] = val;
+    //   }
+    // }
   }
 })
 </script>
@@ -109,4 +109,3 @@ export default defineComponent({
   }
 }
 </style>
-

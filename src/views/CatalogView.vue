@@ -68,7 +68,7 @@ export default defineComponent({
   data() {
     return {
       products: [],
-      filteredProducts: [],
+      // filteredProducts: [],
     }
   },
 
@@ -81,45 +81,53 @@ export default defineComponent({
     })
       .then(res => res.json())
       .then(data => {
-        console.log('data')
-        console.log(data)
-        if (Object.keys(this.filteredProducts).length === 0) this.filteredProducts = data
         this.products = data
       });
   },
 
   computed: {
-    ...mapState(useFilters, ['filterState']),
+    ...mapState(useFilters, ['filtersState']),
+
+    filteredProducts() {
+      let filteredProducts = []
+
+      let filtersKeys = Object.keys(this.filtersState);
+
+      if (filtersKeys.length === 0) filteredProducts = this.products;
+      else {
+        this.products.forEach(product => {
+
+          filtersKeys.forEach(filterId => {
+            if (product.brand === filterId) filteredProducts.push(product);
+
+            if (product.offers) {
+              product.offers.forEach(offer => {
+                if (offer.color === filterId && offer.available>0) {
+                    if (!filteredProducts.includes(product)) {
+                      filteredProducts.push(product)
+                    }
+                  }
+
+                  if (offer.sizes === this.filtersState[filterId].title && offer.available>0) {
+                    if (!filteredProducts.includes(product)) {  
+                      filteredProducts.push(product)
+                    } 
+                  }
+              })
+            }
+          })
+
+        })
+      }
+
+      console.log('filteredProducts');
+      console.log(filteredProducts);
+
+      return filteredProducts;
+    },
   },
 
   watch: {
-    filterState: {
-      handler(newFilterState) {
-        this.filteredProducts = []
-
-        let filtersKeys = Object.keys(newFilterState);
-
-        if (filtersKeys.length === 0) this.filteredProducts = this.products;
-        else {
-          this.products.forEach(product => {
-
-            filtersKeys.forEach(filterId => {
-              if (product.brand === filterId) this.filteredProducts.push(product);
-
-              if (product.offers) {
-                product.offers.forEach(offer => {
-                  if (offer.color === filterId) this.filteredProducts.push(product);
-                  if (offer.sizes === newFilterState[filterId].title) this.filteredProducts.push(product);
-                })
-              }
-            })
-
-          })
-        }
-      },
-      deep: true,
-      // immediate: true,
-    }
   },
 
 
