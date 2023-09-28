@@ -1,15 +1,15 @@
 <template>
-  <div class="card" :class="{'_disabled': product.stock===0}">
-    <img :src="product.image" :alt="product.title" class="card__img">
-    <span class="card__name">{{ product.title }}</span>
-    <span class="card__brand">{{ product.brand }}</span>
-    <span class="card__cost">{{ product.price.value }} {{ (product.price.currency==='RUB')?'&#8381;':'' }}</span>
-    <!-- <div class="card__colors"></div>
-    <div class="card__sizes"></div> -->
-    <button class="card__add" v-if="product.stock===0">Нет в наличии</button>
-    <button class="card__add" v-else>В корзину</button>
-    <!-- <button class="card__add _added">В корзинe</button> -->
-  </div>
+    <div class="card" :class="{'_disabled': product.stock===0}">
+      <img :src="product.image" :alt="product.title" class="card__img">
+      <span class="card__name">{{ product.title }}</span>
+      <span class="card__brand">{{ product.brand }}</span>
+      <span class="card__cost">{{ product.price.value }} {{ (product.price.currency==='RUB')?'&#8381;':'' }}</span>
+      <!-- <div class="card__colors"></div>
+      <div class="card__sizes"></div> -->
+      <button class="card__add" v-if="product.stock===0">Нет в наличии</button>
+      <button class="card__add" v-else>В корзину</button>
+      <!-- <button class="card__add _added">В корзинe</button> -->
+    </div>
 </template>
 
 <script>
@@ -30,7 +30,7 @@ export default defineComponent({
     display: inline-flex;
     flex-direction: column;
 
-    width: calc(25% - 1rem);
+
 
     > * {
       margin-bottom: 0.5rem;

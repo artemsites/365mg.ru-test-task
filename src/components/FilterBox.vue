@@ -7,11 +7,11 @@
       <div class="filter-item__list" :class="{ '_row': filter.title === 'Цвет' || filter.title === 'Размер' }">
 
         <template v-for="val in filter.value" :key="val.id">
-          <button v-if="filter.title === 'Цвет'" class="filter-item__item _box" :style="`--color: ${val.value};`" @click="setFilter(val, filter)"></button>  
+          <button v-if="filter.title === 'Цвет'" class="filter-item__item _box" :class="{'_active': (this.filterState[val.id])?this.filterState[val.id].id===val.id:false}" :style="`--color: ${val.value};`" @click="setFilter(val, $event)"></button>  
 
-          <button v-else-if="filter.title === 'Размер'" class="filter-item__item _box" @click="setFilter(val, filter)">{{ val.title }}</button>  
+          <button v-else-if="filter.title === 'Размер'" class="filter-item__item _box" @click="setFilter(val, $event)" :class="{'_active': (this.filterState[val.id])?this.filterState[val.id].id===val.id:false}">{{ val.title }}</button>  
 
-          <button v-else class="filter-item__item" @click="setFilter(val, filter)">{{ val.title }}</button>  
+          <button v-else class="filter-item__item" @click="setFilter(val, $event)" :class="{'_active': (this.filterState[val.id])?this.filterState[val.id].id===val.id:false}">{{ val.title }}</button>  
         </template>
 
       </div>
@@ -44,13 +44,15 @@ export default defineComponent({
   },
 
   methods: {
-    setFilter(val, filter) {
+    setFilter(val, event) {
       if (this.filterState[val.id]) {
         delete this.filterState[val.id]
       }
       else {
         this.filterState[val.id] = val;
       }
+      console.log('this.filterState')
+      console.log(this.filterState)
     }
   }
 })
@@ -77,6 +79,10 @@ export default defineComponent({
   &__item {
     margin-bottom: 0.3rem;
 
+    &._active {
+      font-weight: 700;
+    }
+
     &._box {
       width: 1.25rem;
       height: 1.25rem;
@@ -87,6 +93,9 @@ export default defineComponent({
       border: 0.01rem solid var(--dark);
 
       margin-right: 0.3rem;
+      &._active {
+        border: 0.15rem solid var(--accent);
+      }
     }
 
     background-color: var((--color));

@@ -2,32 +2,46 @@
   <h2 class="title">Каталог</h2>
 
   <div class="box">
-    <aside class="aside">
+    <aside class="box__aside aside">
       <FilterBox />
     </aside>
 
-    <main class="catalog _pl3">
-      <template v-for="product in filteredProducts" :key="product.id">
-        <CardItem :product="product" />
-      </template>
+    <main class="box__catalog catalog _pl3">
+      <div class="catalog__box">
+        <TransitionGroupCards>
+          <CardItem :product="product" v-for="product in filteredProducts" :key="product.id" />
+        </TransitionGroupCards>
+      </div>
     </main>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .catalog {
-  width: 100%;
-
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-
-  >* {
-    margin-bottom: 1.5rem;
-  }
+  flex-shrink: 1;
 
   &._pl3 {
     padding-left: 2rem;
+  }
+
+  &__box {  
+    width: 100%;
+
+    display: block;
+
+    position: relative;
+
+    > * {
+      width: calc(25% - 3rem / 4);
+
+      flex-shrink: 0;
+      flex-grow: 0;
+
+      margin-bottom: 1.5rem;
+      &:not(:nth-child(4n)) {
+        margin-right: 1rem;
+      }
+    }
   }
 }
 </style>
@@ -38,6 +52,7 @@ import { useStore } from '../stores/store';
 
 import FilterBox from '../components/FilterBox.vue';
 import CardItem from '../components/CardItem.vue';
+import TransitionGroupCards from '../components/TransitionGroupCards.vue';
 
 import { defineComponent } from 'vue';
 
@@ -46,6 +61,7 @@ export default defineComponent({
   components: {
     FilterBox,
     CardItem,
+    TransitionGroupCards,
   },
 
   data() {
@@ -53,6 +69,22 @@ export default defineComponent({
       products: [],
       filteredProducts: [],
     }
+  },
+
+  created() {
+    fetch('/api/products.json', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('data')
+        console.log(data)
+        if (Object.keys(this.filteredProducts).length === 0) this.filteredProducts = data
+        this.products = data
+      });
   },
 
   computed: {
@@ -89,21 +121,7 @@ export default defineComponent({
     }
   },
 
-  created() {
-    fetch('/api/products.json', {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('data')
-        console.log(data)
-        if (Object.keys(this.filteredProducts).length === 0) this.filteredProducts = data
-        this.products = data
-      });
-  },
+
 
 })
 </script>
