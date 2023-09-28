@@ -7,11 +7,30 @@
       <div class="filter-item__list" :class="{ '_row': filter.title === 'Цвет' || filter.title === 'Размер' }">
 
         <template v-for="val in filter.value" :key="val.id">
-          <button v-if="filter.title === 'Цвет'" class="filter-item__item _box" :class="{'_active': (this.filterState[val.id])?this.filterState[val.id].id===val.id:false}" :style="`--color: ${val.value};`" @click="setFilter(val, $event)"></button>  
+          <!-- @todo громоздкая логика в шаблоне -->
 
-          <button v-else-if="filter.title === 'Размер'" class="filter-item__item _box" @click="setFilter(val, $event)" :class="{'_active': (this.filterState[val.id])?this.filterState[val.id].id===val.id:false}">{{ val.title }}</button>  
+          <ButtonColor
+            v-if="filter.title === 'Цвет'"
+            class="filter-item__item"
+            @click="setFilter(val, $event)"
+            :color="val.value"
+            :active="(this.filterState[val.id])?this.filterState[val.id].id===val.id:false" />
 
-          <button v-else class="filter-item__item" @click="setFilter(val, $event)" :class="{'_active': (this.filterState[val.id])?this.filterState[val.id].id===val.id:false}">{{ val.title }}</button>  
+          <ButtonSize
+            v-else-if="filter.title === 'Размер'"
+            class="filter-item__item"
+            @click="setFilter(val, $event)"
+            :active="(this.filterState[val.id])?this.filterState[val.id].id===val.id:false" >
+            {{ val.title }}
+          </ButtonSize>
+
+          <button
+            v-else
+            class="filter-item__item"
+            @click="setFilter(val, $event)"
+            :class="{'_active': (this.filterState[val.id])?this.filterState[val.id].id===val.id:false}">
+            {{ val.title }}
+          </button>
         </template>
 
       </div>
@@ -25,11 +44,15 @@
 import { defineComponent } from 'vue';
 import { mapState, mapWritableState } from 'pinia';
 import { useStore } from '../stores/store';
+import ButtonColor from './ButtonColor.vue';
+import ButtonSize from './ButtonSize.vue';
 
 export default defineComponent({
   name: "FilterBox",
 
   components: {
+    ButtonColor,
+    ButtonSize,
   },
 
   data() {
@@ -82,23 +105,6 @@ export default defineComponent({
     &._active {
       font-weight: 700;
     }
-
-    &._box {
-      width: 1.25rem;
-      height: 1.25rem;
-
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      border: 0.01rem solid var(--dark);
-
-      margin-right: 0.3rem;
-      &._active {
-        border: 0.15rem solid var(--accent);
-      }
-    }
-
-    background-color: var((--color));
   }
 }
 </style>
