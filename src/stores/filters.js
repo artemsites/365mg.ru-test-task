@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { deleteFilterInStorage } from '../helpers/deleteFilterInStorage'
+// import { deleteFilterInStorage } from '../helpers/deleteFilterInStorage'
 import { setFilterToStorage } from '../helpers/setFilterToStorage'
 
 export const useFilters = defineStore('filters', () => {
@@ -10,28 +10,52 @@ export const useFilters = defineStore('filters', () => {
   const filtersState = ref({})
   const filterColors = ref({})
 
-  function setFilter(val) {
-    if (this.filtersState[val.id]) {
-      deleteFilterInStorage(val.id)
-      delete this.filtersState[val.id]
-    } else {
-      setFilterToStorage(val.id)
-      this.filtersState[val.id] = val
+  function setFilter(filterItem, filter) {
+    // console.log('filterItem')
+    // console.log(filterItem)
+
+    // Если типа фильтра такого ещё нет то создание массива 
+    if (!this.filtersState[filter.id]) {
+      this.filtersState[filter.id] = []
+    } 
+
+    let index = this.filtersState[filter.id].findIndex(el=>el.id===filterItem.id)
+    // Если фильтр есть в типе то удаление
+    if (index>=0) {
+      // let index = this.filtersState[filter.id].findIndex(el=>el.id===filterItem.id)
+      this.filtersState[filter.id].splice(index, 1)
+      if (this.filtersState[filter.id].length===0) delete this.filtersState[filter.id]
+      setFilterToStorage(this.filtersState)
+    }  
+    // Иначе добавление фильтра в тип
+    else {
+      this.filtersState[filter.id].push(filterItem)
+      setFilterToStorage(this.filtersState)
     }
+
+    console.log('this.filtersState')
+    console.log(this.filtersState)
   }
 
   function setFiltersStateFromStorage() {
-    let curFiltersState = localStorage.getItem('filtersState')
+    let curFiltersState = JSON.parse(localStorage.getItem('filtersState'))
 
-    if (curFiltersState !== null && curFiltersState !== '') {
-      let arCurFiltersState = localStorage.getItem('filtersState').split(',')
-
-      for (let i in filtersItems.value) {
-        let filterId = filtersItems.value[i].id
-        let filterVal = filtersItems.value[i]
-        if (arCurFiltersState.includes(filterId)) filtersState.value[filterId] = filterVal
-      }
+    if (curFiltersState&&Object.keys(curFiltersState).length > 0) {
+      filtersState.value = curFiltersState
     }
+
+    // if (curFiltersState !== null && curFiltersState !== '') {
+    //   let arCurFiltersState = localStorage.getItem('filtersState').split(',')
+
+    //   for (let i in filtersItems.value) {
+    //     let filterId = filtersItems.value[i].id
+    //     let filterVal = filtersItems.value[i]
+    //     if (arCurFiltersState.includes(filterId)) filtersState.value[filterId] = filterVal
+    //   }
+    // }
+
+    // console.log('filtersState.value')
+    // console.log(filtersState.value)
   }
 
   fetch('/api/filter.json', {

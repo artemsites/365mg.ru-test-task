@@ -24,7 +24,7 @@
     padding-left: 2rem;
   }
 
-  &__box {  
+  &__box {
     width: 100%;
 
     display: flex;
@@ -32,13 +32,14 @@
 
     position: relative;
 
-    > * {
+    >* {
       width: calc(25% - 3rem / 4);
 
       flex-shrink: 0;
       flex-grow: 0;
 
       margin-bottom: 1.5rem;
+
       &:not(:nth-child(4n)) {
         margin-right: 1rem;
       }
@@ -89,48 +90,92 @@ export default defineComponent({
     ...mapState(useFilters, ['filtersState']),
 
     filteredProducts() {
-      let filteredProducts = []
+      let filteredProducts = [];
 
-      let filtersKeys = Object.keys(this.filtersState);
-
-      if (filtersKeys.length === 0) filteredProducts = this.products;
+      if (Object.keys(this.filtersState).length === 0) {
+        filteredProducts = this.products;
+      }
       else {
-        this.products.forEach(product => {
 
-          filtersKeys.forEach(filterId => {
-            if (product.brand === filterId) filteredProducts.push(product);
+        for (let product of this.products) {
 
-            if (product.offers) {
-              product.offers.forEach(offer => {
-                if (offer.color === filterId && offer.available>0) {
-                    if (!filteredProducts.includes(product)) {
-                      filteredProducts.push(product)
-                    }
-                  }
+          let productFilteredState = {
+            brand: null,
+            offers: []
+          };
 
-                  if (offer.sizes === this.filtersState[filterId].title && offer.available>0) {
-                    if (!filteredProducts.includes(product)) {  
-                      filteredProducts.push(product)
-                    } 
-                  }
-              })
+
+
+          // Если ищем брэнд (id === 1)
+          if (this.filtersState[1]) {
+            let brand = this.filtersState[1].find(brand => brand.id === product.brand)
+            if (brand) {
+              productFilteredState.brand = true
             }
-          })
+            else {
+              productFilteredState.brand = false
+            }
+          }
 
-        })
+
+
+          // если брэнд соответствует или не установлен 
+          // и мы фильтруем цвет или размер
+          if (productFilteredState.brand !== false && (this.filtersState[2] || this.filtersState[3])) {
+
+            // Если в продукте есть предложения цветов и размеров
+            if (product.offers) {
+
+              // разбираем предложения 
+              product.offers.forEach(offer => {
+                if (offer.available>0) {
+
+                  // если ищем цвет id===2
+                  if (this.filtersState[2]) {
+                    this.filtersState[2].forEach(filterItem => {
+                      if (offer.color === filterItem.id) {
+                        // если мы отфильтровали цвет и фильтруем размеры
+                        if (this.filtersState[3]) {
+                          this.filtersState[3].forEach(filterItem => {
+                            if (offer.sizes === filterItem.title) {
+                              productFilteredState.offers.push(offer)
+                            }
+                          })
+                        }
+                        else {
+                          // и все в которых совпадает цвет кидаем в массив offers
+                          productFilteredState.offers.push(offer)
+                        }
+                      }
+                    })
+                  }
+                  // если ищем размер id===3
+                  else if (this.filtersState[3]) {
+                    this.filtersState[3].forEach(filterItem => {
+                      if (offer.sizes === filterItem.title) {
+                        productFilteredState.offers.push(offer)
+                      }
+                    })
+                  }
+                  
+                }
+              })
+
+            } 
+          }
+
+          // то продукт проходит фильтрацию
+          if (productFilteredState.brand!==false && productFilteredState.offers.length>0) {
+            filteredProducts.push(product);
+          }
+
+        }
       }
 
-      console.log('filteredProducts');
-      console.log(filteredProducts);
-
       return filteredProducts;
+
     },
   },
-
-  watch: {
-  },
-
-
 
 })
 </script>

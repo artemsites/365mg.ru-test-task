@@ -8,27 +8,28 @@
 
         <template v-for="filterItem in filterList.value" :key="filterItem.id">
           <!-- @todo громоздкая логика в шаблоне -->
-
+          <!-- {{ filterItem.id }} -->
+          <!-- {{ this.filtersState[1] }} -->
           <ButtonColor
             v-if="filterList.title === 'Цвет'"
             class="filter-item__item"
-            @click="setFilter(filterItem)"
+            @click="setFilter(filterItem, filterList)"
             :color="filterItem.value"
-            :active="(this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" />
+            :active="(this.filtersState&&this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" />
 
           <ButtonSize
             v-else-if="filterList.title === 'Размер'"
             class="filter-item__item"
-            @click="setFilter(filterItem)"
-            :active="(this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" >
+            @click="setFilter(filterItem, filterList)"
+            :active="(this.filtersState&&this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" >
             {{ filterItem.title }}
           </ButtonSize>
 
           <button
             v-else
             class="filter-item__item"
-            @click="setFilter(filterItem)"
-            :class="{'_active': (this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false}">
+            @click="setFilter(filterItem, filterList)"
+            :class="{'_active': (this.filtersState && this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false}">
             {{ filterItem.title }}
           </button>
         </template>
@@ -39,6 +40,8 @@
 
   </div>
 </template>
+
+
 
 <script>
 import { defineComponent } from 'vue';
