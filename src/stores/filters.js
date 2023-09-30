@@ -10,31 +10,31 @@ export const useFilters = defineStore('filters', () => {
   const filtersState = ref({})
   const filterColors = ref({})
 
-  function setFilter(filterItem, filter) {
+  function setFilter(filterItem, filterId) {
     // console.log('filterItem')
     // console.log(filterItem)
 
     // Если типа фильтра такого ещё нет то создание массива 
-    if (!this.filtersState[filter.id]) {
-      this.filtersState[filter.id] = []
+    if (!this.filtersState[filterId]) {
+      this.filtersState[filterId] = []
     } 
 
-    let index = this.filtersState[filter.id].findIndex(el=>el.id===filterItem.id)
+    let index = this.filtersState[filterId].findIndex(el=>el.id===filterItem.id)
     // Если фильтр есть в типе то удаление
     if (index>=0) {
-      // let index = this.filtersState[filter.id].findIndex(el=>el.id===filterItem.id)
-      this.filtersState[filter.id].splice(index, 1)
-      if (this.filtersState[filter.id].length===0) delete this.filtersState[filter.id]
+      // let index = this.filtersState[filterId].findIndex(el=>el.id===filterItem.id)
+      this.filtersState[filterId].splice(index, 1)
+      if (this.filtersState[filterId].length===0) delete this.filtersState[filterId]
       setFilterToStorage(this.filtersState)
     }  
     // Иначе добавление фильтра в тип
     else {
-      this.filtersState[filter.id].push(filterItem)
+      this.filtersState[filterId].push(filterItem)
       setFilterToStorage(this.filtersState)
     }
 
-    console.log('this.filtersState')
-    console.log(this.filtersState)
+    // console.log('this.filtersState')
+    // console.log(this.filtersState)
   }
 
   function setFiltersStateFromStorage() {

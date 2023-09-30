@@ -13,23 +13,23 @@
           <ButtonColor
             v-if="filterList.title === 'Цвет'"
             class="filter-item__item"
-            @click="setFilter(filterItem, filterList)"
+            @click="setFilter(filterItem, filterList.id)"
             :color="filterItem.value"
-            :active="(this.filtersState&&this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" />
+            :active="filterItemActive(filterItem, filterList.id)" />
 
           <ButtonSize
             v-else-if="filterList.title === 'Размер'"
             class="filter-item__item"
-            @click="setFilter(filterItem, filterList)"
-            :active="(this.filtersState&&this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false" >
+            @click="setFilter(filterItem, filterList.id)"
+            :active="filterItemActive(filterItem, filterList.id)" >
             {{ filterItem.title }}
           </ButtonSize>
 
           <button
             v-else
             class="filter-item__item"
-            @click="setFilter(filterItem, filterList)"
-            :class="{'_active': (this.filtersState && this.filtersState[filterItem.id])?this.filtersState[filterItem.id].id===filterItem.id:false}">
+            @click="setFilter(filterItem, filterList.id)"
+            :class="{'_active': filterItemActive(filterItem, filterList.id)}">
             {{ filterItem.title }}
           </button>
         </template>
@@ -70,16 +70,9 @@ export default defineComponent({
   },
 
   methods: {
-    // setFilter(val, event) {
-    //   if (this.filtersState[val.id]) {
-    //     deleteFilterInStorage(val.id);
-    //     delete this.filtersState[val.id];
-    //   }
-    //   else {
-    //     setFilterToStorage(val.id);
-    //     this.filtersState[val.id] = val;
-    //   }
-    // }
+    filterItemActive(filterItem, filterId) {
+      if (this.filtersState[filterId]) return this.filtersState[filterId].find(el=>el.id===filterItem.id)
+    }
   }
 })
 </script>
