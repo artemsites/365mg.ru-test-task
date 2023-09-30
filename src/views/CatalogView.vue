@@ -119,16 +119,16 @@ export default defineComponent({
 
 
 
-          // если брэнд соответствует или не установлен 
-          // и мы фильтруем цвет или размер
-          if (productFilteredState.brand !== false && (this.filtersState[2] || this.filtersState[3])) {
+          // если фильтруем цвет или размер
+          if (this.filtersState[2] || this.filtersState[3]) {
 
-            // Если в продукте есть предложения цветов и размеров
-            if (product.offers) {
+            // если брэнд отфильтрован или не установлен 
+            // в продукте есть предложения
+            if (productFilteredState.brand !== false && product.offers) {
 
               // разбираем предложения 
               product.offers.forEach(offer => {
-                if (offer.available>0) {
+                if (offer.available > 0) {
 
                   // если ищем цвет id===2
                   if (this.filtersState[2]) {
@@ -157,23 +157,24 @@ export default defineComponent({
                       }
                     })
                   }
-                  
+
                 }
               })
 
-            } 
+            }
+            
+            // Если после фильтрации офферов ничего не найдено то записываем false
+            if (productFilteredState.offers.length === 0) productFilteredState.offers = false
           }
 
-          // то продукт проходит фильтрацию
-          if (productFilteredState.brand!==false && productFilteredState.offers.length>0) {
+          if (productFilteredState.brand !== false && productFilteredState.offers !== false) {
+            // продукт проходит фильтрацию
             filteredProducts.push(product);
           }
-
         }
       }
 
       return filteredProducts;
-
     },
   },
 
